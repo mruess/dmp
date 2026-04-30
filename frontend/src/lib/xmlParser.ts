@@ -12,7 +12,7 @@ const parser = new XMLParser({
   isArray: (name) =>
     [
       'paragraph', 'id', 'PFX', 'telecom', 'addr', 'local_header',
-      'Software', 'Kontakt', `${SX}Beobachtung`,
+      'Software', 'Kontakt', `${SX}Beobachtung`, `${SX}Ergebnistext`,
     ].includes(name),
   allowBooleanAttributes: true,
 });
@@ -31,11 +31,17 @@ function findBeobachtung(beobachtungen: unknown[], dn: string): Rec | undefined 
 }
 
 function getText(beobachtungen: unknown[], dn: string): string {
+  return getTexts(beobachtungen, dn)[0] ?? '';
+}
+
+// Gibt alle Ergebnistext-Werte zurück (für Mehrfachnennung wie körperliche Aktivität)
+function getTexts(beobachtungen: unknown[], dn: string): string[] {
   const b = findBeobachtung(beobachtungen, dn);
-  if (!b) return '';
+  if (!b) return [];
   const et = b[`${SX}Ergebnistext`];
-  if (Array.isArray(et)) return attr(et[0], 'V');
-  return attr(et, 'V');
+  if (Array.isArray(et)) return et.map((e) => attr(e, 'V')).filter(Boolean);
+  if (et) return [attr(et, 'V')].filter(Boolean);
+  return [];
 }
 
 function getWert(beobachtungen: unknown[], dn: string): string {
@@ -213,7 +219,7 @@ export function parseXmlString(xmlString: string): DmpDocument {
     medikamentoes: {
       glukokortikoidtherapie: getText(medBeob, 'Aktuelle Glukokortikoidtherapie wegen rheumatoider Arthritis'),
       dmardTherapie: getText(medBeob, 'Aktuelle DMARD-Therapie'),
-      koerperlicheAktivitaet: getText(medBeob, 'Regelmäßige körperliche Aktivität'),
+      koerperlicheAktivitaet: getTexts(medBeob, 'Regelmäßige körperliche Aktivität'),
     },
     schulung: {
       vorEinschreibungTeilgenommen: getText(

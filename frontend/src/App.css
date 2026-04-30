@@ -90,6 +90,28 @@
 }
 .btn--success:hover { background: var(--color-secondary-dark); }
 
+.btn--warn {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fbbf24;
+}
+.btn--warn:hover { background: #fde68a; }
+
+.btn-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #dc2626;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  margin-left: 4px;
+}
+
 .btn--lg {
   padding: 10px 20px;
   font-size: 15px;
@@ -369,4 +391,116 @@
   background-repeat: no-repeat;
   background-position: right 10px center;
   padding-right: 28px;
+}
+
+.form-input--error,
+.form-select--error {
+  border-color: var(--color-error);
+  background-color: #fff5f5;
+}
+.form-input--error:focus,
+.form-select--error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.form-error-msg {
+  font-size: 11px;
+  color: var(--color-error);
+  margin-top: 2px;
+  display: block;
+}
+
+.form-field--error .form-label {
+  color: var(--color-error);
+}
+
+/* ===== Checkbox Group ===== */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 0;
+}
+
+.checkbox-group--error .checkbox-label span {
+  color: var(--color-error);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+/* ===== Validation Summary ===== */
+.validation-summary {
+  background: #fef2f2;
+  border-bottom: 1px solid #fca5a5;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--color-error);
+}
+
+.validation-summary strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.validation-summary ul {
+  margin: 0;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.validation-summary__link {
+  background: none;
+  border: none;
+  color: #991b1b;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.validation-ok {
+  background: #f0fdf4;
+  border-bottom: 1px solid #86efac;
+  padding: 10px 20px;
+  font-size: 13px;
+  color: #15803d;
+  font-weight: 500;
+}
+
+/* ===== Tab error badge ===== */
+.tab-btn--has-errors {
+  color: var(--color-error);
+}
+
+.tab-error-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-error);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  margin-left: 6px;
 }

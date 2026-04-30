@@ -70,7 +70,7 @@ export interface AnamneseUndBefunddaten {
 export interface MedikamentoeseUndSonstigeMassnahmen {
   glukokortikoidtherapie: string;
   dmardTherapie: string;
-  koerperlicheAktivitaet: string;
+  koerperlicheAktivitaet: string[]; // Mehrfachauswahl laut Plausi-Regel 6
 }
 
 export interface Schulung {

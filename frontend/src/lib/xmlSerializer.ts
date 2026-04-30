@@ -18,6 +18,17 @@ function textBeob(dn: string, v: string): string {
 				</sciphox:Beobachtung>`;
 }
 
+// Mehrfachnennung (Plausi-Regel 6: körperliche Aktivität)
+function textBeobMulti(dn: string, vs: string[]): string {
+  if (!vs || vs.length === 0) return '';
+  const etLines = vs.map((v) => `\t\t\t\t\t<sciphox:Ergebnistext V="${escXml(v)}"/>`).join('\n');
+  return `
+				<sciphox:Beobachtung>
+					<sciphox:Parameter DN="${escXml(dn)}"/>
+${etLines}
+				</sciphox:Beobachtung>`;
+}
+
 function wertBeob(dn: string, v: string, u: string): string {
   if (!v) return '';
   return `
@@ -172,7 +183,7 @@ export function serializeToXml(doc: DmpDocument): string {
     'Medikamentöse und sonstige Maßnahmen',
     textBeob('Aktuelle Glukokortikoidtherapie wegen rheumatoider Arthritis', medikamentoes.glukokortikoidtherapie) +
       textBeob('Aktuelle DMARD-Therapie', medikamentoes.dmardTherapie) +
-      textBeob('Regelmäßige körperliche Aktivität', medikamentoes.koerperlicheAktivitaet)
+      textBeobMulti('Regelmäßige körperliche Aktivität', medikamentoes.koerperlicheAktivitaet)
   )}${paragraph('Schulung', schulungBeob)}${paragraph(
     'Behandlungsplanung',
     textBeob('Vom Patienten gewünschte Informationsangebote der Krankenkasse', behandlungsplanung.informationsangebote) +

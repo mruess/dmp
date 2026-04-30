@@ -60,7 +60,7 @@ export function createEmptyDocument(documentType: DocumentType): DmpDocument {
     medikamentoes: {
       glukokortikoidtherapie: '',
       dmardTherapie: '',
-      koerperlicheAktivitaet: '',
+      koerperlicheAktivitaet: [],
     },
     schulung: {
       vorEinschreibungTeilgenommen: '',

@@ -3,12 +3,14 @@ import type { DmpDocument } from './types/dmp';
 import { createEmptyDocument } from './lib/emptyDocument';
 import { parseXmlFile } from './lib/xmlParser';
 import { downloadXml, serializeToXml } from './lib/xmlSerializer';
+import { validateDocument } from './lib/validation';
 import { DmpForm } from './components/DmpForm';
 import './App.css';
 
 export default function App() {
   const [doc, setDoc] = useState<DmpDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showValidation, setShowValidation] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleLoadFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -16,6 +18,7 @@ export default function App() {
     if (!file) return;
     try {
       setError(null);
+      setShowValidation(false);
       const loaded = await parseXmlFile(file);
       setDoc(loaded);
     } catch (err) {
@@ -27,11 +30,34 @@ export default function App() {
 
   function handleNewDoc(type: 'EE' | 'EV') {
     setError(null);
+    setShowValidation(false);
     setDoc(createEmptyDocument(type));
+  }
+
+  function handleCheckPlausi() {
+    setShowValidation(true);
+  }
+
+  function handleExport() {
+    if (!doc) return;
+    setShowValidation(true);
+    const errs = validateDocument(doc);
+    if (errs.length > 0) {
+      setError(`${errs.length} Plausibilitätsfehler gefunden. Bitte prüfen Sie die markierten Felder.`);
+      return;
+    }
+    setError(null);
+    downloadXml(doc);
   }
 
   async function handleSendToBackend() {
     if (!doc) return;
+    setShowValidation(true);
+    const errs = validateDocument(doc);
+    if (errs.length > 0) {
+      setError(`${errs.length} Plausibilitätsfehler gefunden. Übermittlung nicht möglich.`);
+      return;
+    }
     try {
       setError(null);
       const xml = serializeToXml(doc);
@@ -46,6 +72,8 @@ export default function App() {
       setError(`Fehler beim Senden: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
+
+  const plausiErrorCount = doc ? validateDocument(doc).length : 0;
 
   return (
     <div className="app">
@@ -73,7 +101,17 @@ export default function App() {
           />
           {doc && (
             <>
-              <button className="btn btn--outline" onClick={() => downloadXml(doc)}>
+              <button
+                className={`btn ${plausiErrorCount > 0 && showValidation ? 'btn--warn' : 'btn--outline'}`}
+                onClick={handleCheckPlausi}
+                title="Plausibilitätsprüfung gemäß Anlage 22 DMP-A-RL"
+              >
+                Plausibilität prüfen
+                {showValidation && plausiErrorCount > 0 && (
+                  <span className="btn-badge">{plausiErrorCount}</span>
+                )}
+              </button>
+              <button className="btn btn--outline" onClick={handleExport}>
                 XML exportieren
               </button>
               <button className="btn btn--success" onClick={handleSendToBackend}>
@@ -113,7 +151,7 @@ export default function App() {
           </div>
         )}
 
-        {doc && <DmpForm doc={doc} onChange={setDoc} />}
+        {doc && <DmpForm doc={doc} onChange={setDoc} showValidation={showValidation} />}
       </main>
     </div>
   );

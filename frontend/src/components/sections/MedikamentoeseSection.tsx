@@ -1,5 +1,5 @@
 import type { MedikamentoeseUndSonstigeMassnahmen } from '../../types/dmp';
-import { FormField, Select } from '../ui/FormField';
+import { FormField, Select, CheckboxGroup } from '../ui/FormField';
 import {
   GLUKOKORTIKOID_THERAPIE,
   DMARD_THERAPIE,
@@ -9,36 +9,51 @@ import {
 interface Props {
   data: MedikamentoeseUndSonstigeMassnahmen;
   onChange: (d: MedikamentoeseUndSonstigeMassnahmen) => void;
+  errors?: Record<string, string>;
 }
 
-export function MedikamentoeseSection({ data, onChange }: Props) {
-  const set = (field: keyof MedikamentoeseUndSonstigeMassnahmen, value: string) =>
-    onChange({ ...data, [field]: value });
-
+export function MedikamentoeseSection({ data, onChange, errors = {} }: Props) {
   return (
     <div className="section-content">
       <div className="subsection">
         <h3 className="subsection-title">Medikamentöse und sonstige Maßnahmen</h3>
         <div className="form-grid form-grid--narrow">
-          <FormField label="Aktuelle Glukokortikoidtherapie wegen rheumatoider Arthritis">
+
+          {/* Plausi-Regel 4 */}
+          <FormField
+            label="Aktuelle Glukokortikoidtherapie wegen rheumatoider Arthritis"
+            error={errors.glukokortikoidtherapie}
+          >
             <Select
               value={data.glukokortikoidtherapie}
               options={GLUKOKORTIKOID_THERAPIE}
-              onChange={(v) => set('glukokortikoidtherapie', v)}
+              onChange={(v) => onChange({ ...data, glukokortikoidtherapie: v })}
+              error={!!errors.glukokortikoidtherapie}
             />
           </FormField>
-          <FormField label="Aktuelle DMARD-Therapie">
+
+          {/* Plausi-Regel 5 */}
+          <FormField label="Aktuelle DMARD-Therapie" error={errors.dmardTherapie}>
             <Select
               value={data.dmardTherapie}
               options={DMARD_THERAPIE}
-              onChange={(v) => set('dmardTherapie', v)}
+              onChange={(v) => onChange({ ...data, dmardTherapie: v })}
+              error={!!errors.dmardTherapie}
             />
           </FormField>
-          <FormField label="Regelmäßige körperliche Aktivität">
-            <Select
-              value={data.koerperlicheAktivitaet}
+
+          {/* Plausi-Regel 6: Mehrfachnennung möglich; „Ja" schließt andere aus */}
+          <FormField
+            label="Regelmäßige körperliche Aktivität"
+            hint='Mehrfachauswahl möglich. „Ja" schließt andere Angaben aus.'
+            error={errors.koerperlicheAktivitaet}
+          >
+            <CheckboxGroup
               options={KOERPERLICHE_AKTIVITAET}
-              onChange={(v) => set('koerperlicheAktivitaet', v)}
+              value={data.koerperlicheAktivitaet}
+              onChange={(v) => onChange({ ...data, koerperlicheAktivitaet: v })}
+              exclusiveOption="Ja"
+              error={!!errors.koerperlicheAktivitaet}
             />
           </FormField>
         </div>

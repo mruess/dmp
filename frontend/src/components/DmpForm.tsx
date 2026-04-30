@@ -1,5 +1,10 @@
-import { useState } from 'react';
-import type { DmpDocument, Provider, Patient, Versicherung, AdministrativeDaten, AnamneseUndBefunddaten, MedikamentoeseUndSonstigeMassnahmen, Schulung, Behandlungsplanung } from '../types/dmp';
+import { useState, useMemo } from 'react';
+import type {
+  DmpDocument, Provider, Patient, Versicherung,
+  AdministrativeDaten, AnamneseUndBefunddaten,
+  MedikamentoeseUndSonstigeMassnahmen, Schulung, Behandlungsplanung,
+} from '../types/dmp';
+import { validateDocument, errorsForSection } from '../lib/validation';
 import { KopfdatenSection } from './sections/KopfdatenSection';
 import { AdministrativeSection } from './sections/AdministrativeSection';
 import { AnamneseSection } from './sections/AnamneseSection';
@@ -8,12 +13,12 @@ import { SchulungSection } from './sections/SchulungSection';
 import { BehandlungsplanungSection } from './sections/BehandlungsplanungSection';
 
 const TABS = [
-  { id: 'kopfdaten', label: 'Kopfdaten' },
-  { id: 'administrative', label: 'Administrative Daten' },
-  { id: 'anamnese', label: 'Anamnese & Befund' },
-  { id: 'medikamentoes', label: 'Medikamentöse Maßnahmen' },
-  { id: 'schulung', label: 'Schulung' },
-  { id: 'behandlungsplanung', label: 'Behandlungsplanung' },
+  { id: 'kopfdaten', label: 'Kopfdaten', section: '' },
+  { id: 'administrative', label: 'Administrative Daten', section: 'administrative' },
+  { id: 'anamnese', label: 'Anamnese & Befund', section: 'anamnese' },
+  { id: 'medikamentoes', label: 'Medikamentöse Maßnahmen', section: 'medikamentoes' },
+  { id: 'schulung', label: 'Schulung', section: 'schulung' },
+  { id: 'behandlungsplanung', label: 'Behandlungsplanung', section: 'behandlungsplanung' },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -21,14 +26,30 @@ type TabId = (typeof TABS)[number]['id'];
 interface Props {
   doc: DmpDocument;
   onChange: (doc: DmpDocument) => void;
+  showValidation?: boolean;
 }
 
-export function DmpForm({ doc, onChange }: Props) {
+export function DmpForm({ doc, onChange, showValidation = false }: Props) {
   const [activeTab, setActiveTab] = useState<TabId>('kopfdaten');
 
-  const docTypeBadge = doc.documentType === 'EE'
-    ? <span className="badge badge--ee">Erstdokumentation</span>
-    : <span className="badge badge--ev">Verlaufsdokumentation</span>;
+  const allErrors = useMemo(() => validateDocument(doc), [doc]);
+  const errorsBySectionMap = useMemo(
+    () =>
+      Object.fromEntries(
+        TABS.filter((t) => t.section).map((t) => [t.section, errorsForSection(allErrors, t.section)])
+      ),
+    [allErrors]
+  );
+
+  function errCountForTab(section: string): number {
+    if (!showValidation || !section) return 0;
+    return allErrors.filter((e) => e.section === section).length;
+  }
+
+  const docTypeBadge =
+    doc.documentType === 'EE'
+      ? <span className="badge badge--ee">Erstdokumentation</span>
+      : <span className="badge badge--ev">Verlaufsdokumentation</span>;
 
   return (
     <div className="dmp-form">
@@ -44,17 +65,47 @@ export function DmpForm({ doc, onChange }: Props) {
         </div>
       </div>
 
+      {showValidation && allErrors.length > 0 && (
+        <div className="validation-summary">
+          <strong>Plausibilitätsfehler ({allErrors.length}):</strong>
+          <ul>
+            {allErrors.map((e, i) => (
+              <li key={i}>
+                <button
+                  className="validation-summary__link"
+                  onClick={() => setActiveTab(TABS.find((t) => t.section === e.section)?.id ?? 'kopfdaten')}
+                  type="button"
+                >
+                  {TABS.find((t) => t.section === e.section)?.label ?? e.section}
+                </button>
+                {' → '}{e.message}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {showValidation && allErrors.length === 0 && (
+        <div className="validation-ok">
+          Alle Plausibilitätsprüfungen bestanden.
+        </div>
+      )}
+
       <nav className="tab-nav">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            className={`tab-btn${activeTab === tab.id ? ' tab-btn--active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-            type="button"
-          >
-            {tab.label}
-          </button>
-        ))}
+        {TABS.map((tab) => {
+          const errCount = errCountForTab(tab.section);
+          return (
+            <button
+              key={tab.id}
+              className={`tab-btn${activeTab === tab.id ? ' tab-btn--active' : ''}${errCount > 0 ? ' tab-btn--has-errors' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+              type="button"
+            >
+              {tab.label}
+              {errCount > 0 && <span className="tab-error-badge">{errCount}</span>}
+            </button>
+          );
+        })}
       </nav>
 
       <div className="tab-content">
@@ -84,12 +135,14 @@ export function DmpForm({ doc, onChange }: Props) {
           <AnamneseSection
             data={doc.anamnese}
             onChange={(d: AnamneseUndBefunddaten) => onChange({ ...doc, anamnese: d })}
+            errors={showValidation ? errorsBySectionMap['anamnese'] : {}}
           />
         )}
         {activeTab === 'medikamentoes' && (
           <MedikamentoeseSection
             data={doc.medikamentoes}
             onChange={(d: MedikamentoeseUndSonstigeMassnahmen) => onChange({ ...doc, medikamentoes: d })}
+            errors={showValidation ? errorsBySectionMap['medikamentoes'] : {}}
           />
         )}
         {activeTab === 'schulung' && (
@@ -97,6 +150,7 @@ export function DmpForm({ doc, onChange }: Props) {
             data={doc.schulung}
             documentType={doc.documentType}
             onChange={(d: Schulung) => onChange({ ...doc, schulung: d })}
+            errors={showValidation ? errorsBySectionMap['schulung'] : {}}
           />
         )}
         {activeTab === 'behandlungsplanung' && (
