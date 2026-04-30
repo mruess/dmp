@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:kbv/kbv/typelib/001" targetNamespace="urn:kbv/kbv/typelib/001" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- ******************** kontakttyp_typ ******************************-->
+	<xs:simpleType name="kontakttyp_typ">
+		<xs:annotation>
+			<xs:documentation xml:lang="de">Kodierter Wert der Kontakttypen</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SOFTV">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">Softwareverantwortlicher</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="REGS">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">RegionalerSystembetreuer</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

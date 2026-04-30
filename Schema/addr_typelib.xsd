@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn::hl7-org/cda" xmlns:kbv="urn::hl7-org/kbv" targetNamespace="urn::hl7-org/cda" elementFormDefault="qualified">
+	<!-- ****************************** person_addr_typ ****************************** -->
+	<xs:complexType name="person_addr_typ">
+		<xs:annotation>
+			<xs:appinfo>Adresse</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ADL" type="ADL_typ" minOccurs="0" maxOccurs="2"/>
+			<xs:element name="STR" type="STR_typ" minOccurs="0"/>
+			<xs:element name="HNR" type="HNR_typ" minOccurs="0"/>
+			<xs:element name="ZIP" type="ZIP_typ" minOccurs="0"/>
+			<xs:element name="CTY" type="CTY_typ"/>
+			<xs:element name="CNT" type="CNT_typ" minOccurs="0"/>
+			<xs:element name="POB" type="POB_typ" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="USE" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="PST"/>
+					<xs:enumeration value="PHYS"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ****************************** Hilfstypen ****************************** -->
+	<xs:complexType name="ZIP_typ">
+		<xs:annotation>
+			<xs:appinfo>Postleitzahl der Anschrift</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:minLength value="1"/>
+					<xs:maxLength value="10"/>
+					<xs:whiteSpace value="collapse"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ADL_typ">
+		<xs:annotation>
+			<xs:appinfo>Zusatzinformation zur Anschrift (Krankenhaus und Abteilung)</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="40"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="STR_typ">
+		<xs:annotation>
+			<xs:appinfo>Straße der Anschrift</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="46"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="HNR_typ">
+		<xs:annotation>
+			<xs:appinfo>Hausnummer der Anschrift</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="9"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CTY_typ">
+		<xs:annotation>
+			<xs:appinfo>Ort der Anschrift</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="40"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CNT_typ">
+		<xs:annotation>
+			<xs:appinfo>Wohnsitzlaenderkode</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="3"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="POB_typ">
+		<xs:annotation>
+			<xs:appinfo>Postfach bei Postfachadresse</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:whiteSpace value="collapse"/>
+					<xs:maxLength value="8"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

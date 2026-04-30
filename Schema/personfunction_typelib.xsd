@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Mit XMLSpy v2019 rel. 3 sp1 (x64) (http://www.altova.com) von Kassenärztliche Bundesvereinigung (Kassenärztliche Bundesvereinigung) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:kbv/kbv/typelib/001" targetNamespace="urn:kbv/kbv/typelib/001" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- ******************** personfunction_typ ******************************-->
+	<xs:simpleType name="personfunction_typ">
+		<xs:annotation>
+			<xs:documentation xml:lang="de">Kodierter Wert der Kontakttypen</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BEHA">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">Behandelnde Arzt</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ARZTW">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">Arztwechsel</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="VERTRETER">
+				<xs:annotation>
+					<xs:documentation xml:lang="de">Arzt behandelt in Vertretung</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

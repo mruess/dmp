@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:kbv/kbv/typelib/001" targetNamespace="urn:kbv/kbv/typelib/001" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="administrative_gender_cd_typ">
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:annotation>
+					<xs:documentation>Geschlecht - Codierung gemäß HL7 Kodesystem AdministrativeGender fuer DMP - restricted auf F und M</xs:documentation>
+				</xs:annotation>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="F">
+						<xs:annotation>
+							<xs:documentation>Female</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="M">
+						<xs:annotation>
+							<xs:documentation>Male</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="S" type="xs:string" use="optional" fixed="2.16.840.1.113883.5.1"/>
+	</xs:complexType>
+	<xs:complexType name="administrative_gender_cd_all_typ">
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:annotation>
+					<xs:documentation>Geschlecht - Codierung gemäß HL7 Kodesystem AdministrativeGender</xs:documentation>
+				</xs:annotation>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="F">
+						<xs:annotation>
+							<xs:documentation>Female</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="M">
+						<xs:annotation>
+							<xs:documentation>Male</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="UN">
+						<xs:annotation>
+							<xs:documentation>Undifferentiated</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="X">
+						<xs:annotation>
+							<xs:documentation>Undetermined</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="S" type="xs:string" use="optional" fixed="2.16.840.1.113883.5.1"/>
+	</xs:complexType>
+</xs:schema>

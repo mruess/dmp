@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns="urn::hl7-org/kbv" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn::hl7-org/kbv" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="string_typelib.xsd"/>
+	<xs:include schemaLocation="guid_typelib.xsd"/>
+	<xs:include schemaLocation="nummer_typelib.xsd"/>
+	<xs:include schemaLocation="dttm_typelib.xsd"/>
+</xs:schema>

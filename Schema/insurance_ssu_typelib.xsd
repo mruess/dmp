@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Mit XMLSpy v2019 rel. 3 sp1 (x64) (http://www.altova.com) von Kassenärztliche Bundesvereinigung (Kassenärztliche Bundesvereinigung) bearbeitet -->
+<xs:schema xmlns:kbv="urn::hl7-org/kbv" xmlns:kbvlib="urn:kbv/kbv/typelib/001" xmlns="urn::sciphox-org/sciphox" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn::sciphox-org/sciphox" elementFormDefault="qualified">
+	<xs:import namespace="urn::hl7-org/kbv" schemaLocation="all_kbv_typelib.xsd"/>
+	<xs:import namespace="urn:kbv/kbv/typelib/001" schemaLocation="all_kbvtypelib001_typelib.xsd"/>
+	<!-- local-header-insurance-typ -->
+	<xs:complexType name="dmp_insurance_ssu_typ">
+		<xs:sequence>
+			<xs:element name="sciphox-ssu" type="ssu_insurance_typ">
+				<xs:annotation>
+					<xs:appinfo>sciphox-SSU: insurance (Krankenversicherung)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ignore" type="xs:string" use="required" fixed="all"/>
+		<xs:attribute name="descriptor" type="xs:string" use="required" fixed="sciphox"/>
+	</xs:complexType>
+	<!--	******************** ssu-insurance-typ ******************** -->
+	<xs:complexType name="ssu_insurance_typ">
+		<xs:sequence>
+			<xs:element name="GesetzlicheKrankenversicherung" type="GesetzlicheKrankenversicherung_typ"/>
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="required" fixed="insurance"/>
+		<xs:attribute name="country" type="xs:string" use="required" fixed="de"/>
+		<xs:attribute name="version" type="xs:string" use="required" fixed="v3"/>
+	</xs:complexType>
+	<!-- GesetzlicheKrankenversicherung-typ -->
+	<xs:complexType name="GesetzlicheKrankenversicherung_typ">
+		<xs:annotation>
+			<xs:appinfo>Gesetzliche Krankenversicherung</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Kostentraegerbezeichnung" type="Kostentraegerbezeichnung_typ"/>
+			<xs:element name="Kostentraegerkennung" type="Kostentraegerkennung_typ"/>
+			<xs:element name="KostentraegerAbrechnungsbereich" type="KostentraegerAbrechnungsbereich_typ"/>
+			<xs:element name="WOP" type="WOP_typ" minOccurs="0"/>
+			<xs:element name="AbrechnungsVKNR" type="AbrechnungsVKNR_typ" minOccurs="0"/>
+			<xs:element name="SKTZusatzangabe" type="SKTZusatzangabe_typ" minOccurs="0"/>
+			<xs:element name="Versichertennummer" type="Versichertennummer_typ"/>
+			<xs:element name="Versichertenart" type="Versichertenart_typ"/>
+			<xs:element name="BesonderePersonengruppe" type="BesonderePersonengruppe_typ"/>
+			<xs:element name="DMP_Kennzeichnung" type="DMP_Kennzeichnung_typ"/>
+			<xs:element name="VersicherungsschutzBeginn" type="VersicherungsschutzBeginn_typ" minOccurs="0"/>
+			<xs:element name="VersicherungsschutzEnde" type="VersicherungsschutzEnde_typ" minOccurs="0"/>
+			<xs:element name="Einlesedatum" type="Einlesedatum_typ" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--	******************** Element Kostenträgerbezeichnung ******************** -->
+	<xs:complexType name="Kostentraegerbezeichnung_typ">
+		<xs:annotation>
+			<xs:appinfo>Name des Kostenträgers</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:minLength value="2"/>
+					<xs:maxLength value="45"/>
+					<xs:whiteSpace value="collapse"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<!--	******************** Element Kostentraegerkennung ******************** -->
+	<xs:complexType name="Kostentraegerkennung_typ">
+		<xs:annotation>
+			<xs:appinfo>Kostentraegerkennung</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:pattern value="\d{9}"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<!--	******************** Element Kostenträgerabrechnungsbereich ******************** -->
+	<xs:complexType name="KostentraegerAbrechnungsbereich_typ">
+		<xs:annotation>
+			<xs:appinfo>Kostentraeger Abrechnungsbereich</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" type="kbvlib:ktab_typ" use="required"/>
+		<xs:attribute name="S" type="xs:string" use="required" fixed="2.16.840.1.113883.3.7.1.16"/>
+	</xs:complexType>
+	<!--	******************** Element WOP 	******************** -->
+	<xs:complexType name="WOP_typ">
+		<xs:annotation>
+			<xs:appinfo>KVBereich</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" type="kbvlib:kv_bereich_typ" use="required"/>
+		<xs:attribute name="S" type="xs:string" use="required" fixed="2.16.840.1.113883.3.7.1.17"/>
+	</xs:complexType>
+	<!--	******************** Element AbrechnungsVKNR ******************** -->
+	<xs:complexType name="AbrechnungsVKNR_typ">
+		<xs:annotation>
+			<xs:appinfo>Abrechnungs-VKNR der Kasse</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" type="kbv:vknr_typ" use="required"/>
+		<xs:attribute name="S" type="xs:string" use="required" fixed="AbrechnungsVKNR"/>
+	</xs:complexType>
+	<!--	******************** Element SKTZusatzangabe ******************** -->
+	<xs:complexType name="SKTZusatzangabe_typ">
+		<xs:annotation>
+			<xs:appinfo>Bei sonstigen Kostenträger die SKTZusatzangabe</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" type="kbv:string_max_60_typ" use="required"/>
+	</xs:complexType>
+	<!-- ******************** Element Versichertennummer ******************** -->
+	<xs:complexType name="Versichertennummer_typ">
+		<xs:annotation>
+			<xs:appinfo>Versichertennummer</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" type="kbv:versichertennummer_typ" use="required"/>
+	</xs:complexType>
+	<!-- ******************** Element Versichertenart	******************** -->
+	<xs:complexType name="Versichertenart_typ">
+		<xs:annotation>
+			<xs:appinfo>Versichertenart</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" type="kbvlib:versichertenart_typ" use="required"/>
+		<xs:attribute name="S" type="xs:string" use="required" fixed="2.16.840.1.113883.3.7.1.1"/>
+	</xs:complexType>
+	<!-- ******************** Element Besondere Personengruppe******************** -->
+	<xs:complexType name="BesonderePersonengruppe_typ">
+		<xs:annotation>
+			<xs:appinfo>BesonderePersonengruppe des Versicherten</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="[0-9][0-9]"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="S" type="xs:string" use="optional" fixed="1.2.276.0.76.5.222"/>
+	</xs:complexType>
+	<!-- ******************** Element DMP_Kennzeichnung****************************-->
+	<xs:complexType name="DMP_Kennzeichnung_typ">
+		<xs:annotation>
+			<xs:appinfo>DMP_Kennzeichnung</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="[0-9][0-9]"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="S" type="xs:string" use="optional" fixed="1.2.276.0.76.5.223"/>
+	</xs:complexType>
+	<!-- ******************** Element  VersicherungsschutzBeginn  ******************** -->
+	<xs:complexType name="VersicherungsschutzBeginn_typ">
+		<xs:annotation>
+			<xs:appinfo>Datum des Beginns des Versicherungsschutzes von der Versichertenkarte</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" type="xs:date" use="required"/>
+	</xs:complexType>
+	<!-- ******************** Element  VersicherungsschutzEnde  ******************** -->
+	<xs:complexType name="VersicherungsschutzEnde_typ">
+		<xs:annotation>
+			<xs:appinfo>Datum des Endes des Versicherungsschutzes von der Versichertenkarte</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" type="xs:date" use="required"/>
+	</xs:complexType>
+	<!-- Element *************Einlesedatum ************************************-->
+	<xs:complexType name="Einlesedatum_typ">
+		<xs:annotation>
+			<xs:appinfo>Einlesedatum der Versichertenkarte</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="V" type="xs:date" use="required"/>
+	</xs:complexType>
+	<!--
+	============================================================
+	Datentypen für die Schnittstelle zwischen Datenannahmestellen und gemeinsamen Einrichtungen
+	============================================================-->
+	<xs:complexType name="dmp_insurance_ssu_da_typ">
+		<xs:sequence>
+			<xs:element name="sciphox-ssu">
+				<xs:annotation>
+					<xs:appinfo>sciphox-SSU: insurance (Krankenversicherung)</xs:appinfo>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="GesetzlicheKrankenversicherung">
+							<xs:complexType>
+								<xs:annotation>
+									<xs:appinfo>Gesetzliche Krankenversicherung</xs:appinfo>
+								</xs:annotation>
+								<xs:sequence>
+									<xs:element name="Kostentraegerbezeichnung" type="Kostentraegerbezeichnung_typ"/>
+									<xs:element name="Kostentraegerkennung" type="Kostentraegerkennung_typ"/>
+									<xs:element name="Versichertennummer" type="Versichertennummer_da_typ"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="type" type="xs:string" use="required" fixed="insurance"/>
+					<xs:attribute name="country" type="xs:string" use="required" fixed="de"/>
+					<xs:attribute name="version" type="xs:string" use="required" fixed="v3"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ignore" type="xs:string" use="required" fixed="all"/>
+		<xs:attribute name="descriptor" type="xs:string" use="required" fixed="sciphox"/>
+	</xs:complexType>
+	<xs:complexType name="Versichertennummer_da_typ">
+		<xs:attribute name="V" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:minLength value="1"/>
+					<xs:maxLength value="256"/>
+					<xs:whiteSpace value="collapse"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<!--
+	============================================================
+	Datentypen für die eHKS-Schnittstelle
+	============================================================-->
+	<xs:complexType name="eHKS_insurance_ssu_typ">
+		<xs:sequence>
+			<xs:element name="sciphox-ssu">
+				<xs:annotation>
+					<xs:appinfo>sciphox-SSU: insurance (Krankenversicherung)</xs:appinfo>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="GesetzlicheKrankenversicherung">
+							<xs:complexType>
+								<xs:annotation>
+									<xs:appinfo>Gesetzliche Krankenversicherung</xs:appinfo>
+								</xs:annotation>
+								<xs:sequence>
+									<xs:element name="Kostentraegerbezeichnung" type="Kostentraegerbezeichnung_typ"/>
+									<xs:element name="Kostentraegerkennung" type="Kostentraegerkennung_typ"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="type" type="xs:string" use="required" fixed="insurance"/>
+					<xs:attribute name="country" type="xs:string" use="required" fixed="de"/>
+					<xs:attribute name="version" type="xs:string" use="required" fixed="v3"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ignore" type="xs:string" use="required" fixed="all"/>
+		<xs:attribute name="descriptor" type="xs:string" use="required" fixed="sciphox"/>
+	</xs:complexType>
+</xs:schema>

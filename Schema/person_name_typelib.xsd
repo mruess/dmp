@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns="urn::hl7-org/cda" xmlns:kbv="urn::hl7-org/kbv" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn::hl7-org/cda" elementFormDefault="qualified">
+	<xs:complexType name="dmp_provider_person_name_typ">
+		<xs:annotation>
+			<xs:appinfo>Name des Erstellers</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="nm">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="GIV" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>Vorname</xs:appinfo>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:attribute name="V" use="required">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:minLength value="1"/>
+											<xs:maxLength value="45"/>
+											<xs:whiteSpace value="collapse"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="FAM">
+							<xs:annotation>
+								<xs:appinfo>Familienname</xs:appinfo>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:attribute name="V" use="required">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:minLength value="1"/>
+											<xs:maxLength value="45"/>
+											<xs:whiteSpace value="collapse"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="PFX" minOccurs="0" maxOccurs="10">
+							<xs:annotation>
+								<xs:appinfo>Namenszusatz</xs:appinfo>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:attribute name="V" use="required">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="20"/>
+											<xs:whiteSpace value="collapse"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+								<xs:attribute name="QUAL" type="praefix-typ"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ****************************** dmp_patient_person_name_typ ****************************** -->
+	<xs:complexType name="dmp_patient_person_name_typ">
+		<xs:annotation>
+			<xs:appinfo>Patienten-Name</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="nm">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="GIV">
+							<xs:annotation>
+								<xs:appinfo>Vorname</xs:appinfo>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:attribute name="V" use="required">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:minLength value="1"/>
+											<xs:maxLength value="45"/>
+											<xs:whiteSpace value="collapse"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="FAM">
+							<xs:annotation>
+								<xs:appinfo>Familienname</xs:appinfo>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:attribute name="V" use="required">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:minLength value="1"/>
+											<xs:maxLength value="45"/>
+											<xs:whiteSpace value="collapse"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="PFX" minOccurs="0" maxOccurs="10">
+							<xs:annotation>
+								<xs:appinfo>Namenszusatz</xs:appinfo>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:attribute name="V" use="required">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="20"/>
+											<xs:whiteSpace value="collapse"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+								<xs:attribute name="QUAL" type="praefix-typ"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ****************************** praefix-typ ****************************** -->
+	<xs:simpleType name="praefix-typ">
+		<xs:annotation>
+			<xs:documentation>	
+				AC			academic			
+				NB			nobility	
+				VV			voorvoegsel	
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AC"/>
+			<xs:enumeration value="NB"/>
+			<xs:enumeration value="VV"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

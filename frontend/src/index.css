@@ -1,0 +1,40 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --color-primary: #1a56db;
+  --color-primary-dark: #1344b5;
+  --color-secondary: #0e9f6e;
+  --color-secondary-dark: #057a55;
+  --color-bg: #f3f4f6;
+  --color-surface: #ffffff;
+  --color-border: #d1d5db;
+  --color-text: #111827;
+  --color-text-muted: #6b7280;
+  --color-error: #dc2626;
+  --color-error-bg: #fef2f2;
+  --color-ee: #1a56db;
+  --color-ev: #0e9f6e;
+  --radius: 6px;
+  --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4 { margin: 0; font-weight: 600; }
+p { margin: 0; }
+button { cursor: pointer; font-family: inherit; }
+input, select { font-family: inherit; }

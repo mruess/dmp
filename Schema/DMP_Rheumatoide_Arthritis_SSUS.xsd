@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Mit XMLSpy v2021 rel. 3 sp1 (x64) (http://www.altova.com) von Kassenärztliche Bundesvereinigung (Kassenärztliche Bundesvereinigung) bearbeitet -->
+<xs:schema xmlns:cda="urn::hl7-org/cda" xmlns:sciphox="urn::sciphox-org/sciphox" xmlns="urn::sciphox-org/sciphox" xmlns:kbv="urn::hl7-org/kbv" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn::sciphox-org/sciphox" elementFormDefault="qualified">
+	<xs:import namespace="urn::hl7-org/kbv" schemaLocation="all_kbv_typelib.xsd"/>
+	<xs:include schemaLocation="insurance_ssu_typelib.xsd"/>
+	<xs:include schemaLocation="ErgebnistexteRA.xsd"/>
+	<xs:include schemaLocation="ParameterRA.xsd"/>
+	<xs:include schemaLocation="DMP_Rheumatoide_Arthritis_software_ssu.xsd"/>
+	<!-- ****************************** body ****************************** -->
+	<xs:element name="sciphox-ssu">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:group ref="observation"/>
+			</xs:sequence>
+			<xs:attribute name="type" type="xs:string" fixed="observation"/>
+			<xs:attribute name="country" type="xs:string" use="required" fixed="de"/>
+			<xs:attribute name="version" type="xs:string" use="required" fixed="v1"/>
+		</xs:complexType>
+	</xs:element>
+	<!--	********************* SSU Observation ********************* -->
+	<xs:group name="observation">
+		<xs:sequence>
+			<xs:element ref="Beobachtungen"/>
+		</xs:sequence>
+	</xs:group>
+	<xs:element name="Beobachtungen">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Beobachtung" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:unique name="u_Parameter">
+			<xs:selector xpath="./sciphox:Beobachtung/sciphox:Parameter"/>
+			<xs:field xpath="@DN"/>
+		</xs:unique>
+	</xs:element>
+	<xs:element name="Beobachtung">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Parameter"/>
+				<xs:element ref="Ergebnistext" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="Ergebniswert" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:unique name="u_Ergebnistext">
+			<xs:selector xpath="./sciphox:Ergebnistext"/>
+			<xs:field xpath="@V"/>
+		</xs:unique>
+		<xs:unique name="u_Ergebniswert">
+			<xs:selector xpath="./sciphox:Ergebniswert"/>
+			<xs:field xpath="@U"/>
+		</xs:unique>
+	</xs:element>
+	<!-- ***************************** Parameter ******************************** -->
+	<xs:element name="Parameter">
+		<xs:complexType>
+			<xs:attribute name="DN" use="required">
+				<xs:simpleType>
+					<xs:union memberTypes="AdministrativeDaten AnamneseundBefunddaten MedikamentoeseundsonstigeMassnahmen Schulung Behandlungsplanung"/>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<!-- *************************** Ergebnistext ************************** -->
+	<xs:element name="Ergebnistext">
+		<xs:complexType>
+			<xs:attribute name="V" use="required">
+				<xs:simpleType>
+					<xs:union memberTypes="AdministrativeDaten_txt AnamneseundBefunddaten_txt MedikamentoeseundsonstigeMassnahmen_txt Schulungen_txt Behandlungsplanung_txt"/>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="AdministrativeDaten_txt">
+		<xs:union memberTypes="Einschreibungwegen"/>
+	</xs:simpleType>
+	<xs:simpleType name="AnamneseundBefunddaten_txt">
+		<xs:union memberTypes="Raucher Begleiterkrankungen ErkrankungsdauerderrheumatoidenArthritiszumZeitpunktderaktuellenDokumentation KlinischeEinschaetzungdesOsteoporoserisikosdurchgefuehrt"/>
+	</xs:simpleType>
+	<xs:simpleType name="MedikamentoeseundsonstigeMassnahmen_txt">
+		<xs:union memberTypes="AktuelleGlukokortikoidtherapiewegenrheumatoiderArthritis AktuelleDMARDTherapie RegelmaeßigekoerperlicheAktivitaet"/>
+	</xs:simpleType>
+	<xs:simpleType name="Schulungen_txt">
+		<xs:union memberTypes="BereitsvorEinschreibungindasDMPaneinerRheumaSchulungteilgenommen RheumaSchulungempfohlenbeiaktuellerDokumentation RheumaSchulungwahrgenommen"/>
+	</xs:simpleType>
+	<xs:simpleType name="Behandlungsplanung_txt">
+		<xs:union memberTypes="Dokumentationsintervall VomPatientgewuenschteInfo"/>
+	</xs:simpleType>
+	<!--*********************** Ergebniswert ********************** -->
+	<xs:element name="Ergebniswert">
+		<xs:complexType>
+			<xs:attribute name="V" type="kbv:string_max_60_typ" use="required"/>
+			<xs:attribute name="U" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="kg"/>
+						<xs:enumeration value="m"/>
+						<xs:enumeration value="mmHg"/>
+						<xs:enumeration value="{Punktzahl}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<!-- ****************************** ENDE: body ****************************** -->
+</xs:schema>
