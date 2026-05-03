@@ -8,7 +8,6 @@ const SX = 'sciphox:';
 const parser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: '@_',
-  ignoreNameSpace: true,
   isArray: (name) =>
     [
       'paragraph', 'id', 'PFX', 'telecom', 'addr', 'local_header',

@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react';
 import type { DmpDocument } from './types/dmp';
 import { createEmptyDocument } from './lib/emptyDocument';
-import { parseXmlFile } from './lib/xmlParser';
+import { parseXmlFile, parseXmlString } from './lib/xmlParser';
 import { downloadXml, serializeToXml } from './lib/xmlSerializer';
 import { validateDocument } from './lib/validation';
+import { apiCreate, apiGetById, apiUpdate } from './lib/api';
 import { DmpForm } from './components/DmpForm';
+import { BackendDocumentList } from './components/BackendDocumentList';
 import './App.css';
 
 function computeQuartal(dateStr: string): string {
@@ -15,8 +17,10 @@ function computeQuartal(dateStr: string): string {
 
 export default function App() {
   const [doc, setDoc] = useState<DmpDocument | null>(null);
+  const [backendId, setBackendId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showValidation, setShowValidation] = useState(false);
+  const [showBackendList, setShowBackendList] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleLoadFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -27,6 +31,7 @@ export default function App() {
       setShowValidation(false);
       const loaded = await parseXmlFile(file);
       setDoc(loaded);
+      setBackendId(null);
     } catch (err) {
       setError(`Fehler beim Laden: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
@@ -37,7 +42,24 @@ export default function App() {
   function handleNewDoc(type: 'EE' | 'EV') {
     setError(null);
     setShowValidation(false);
+    setBackendId(null);
     setDoc(createEmptyDocument(type));
+  }
+
+  async function handleLoadFromBackend(id: string) {
+    try {
+      setError(null);
+      const detail = await apiGetById(id);
+      const xmlString = new TextDecoder().decode(
+        Uint8Array.from(atob(detail.xml), (c) => c.charCodeAt(0))
+      );
+      setDoc(parseXmlString(xmlString));
+      setBackendId(id);
+      setShowValidation(false);
+      setShowBackendList(false);
+    } catch (err) {
+      setError(`Fehler beim Laden: ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
   function handleCheckPlausi() {
@@ -68,25 +90,23 @@ export default function App() {
       setError(null);
       const xml = serializeToXml(doc);
       const xmlB64 = btoa(unescape(encodeURIComponent(xml)));
-      const resp = await fetch('/api/dmp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          pnr: doc.patient.patientId,
-          type: doc.documentType,
-          fall: doc.setId,
-          serviceTmr: doc.serviceDate,
-          originationDttm: doc.originationDate,
-          quartal: computeQuartal(doc.serviceDate),
-          lanr: doc.provider.lanr,
-          bsnr: doc.provider.bsnr,
-          ik: doc.versicherung.kostentraegerkennung,
-          xml: xmlB64,
-        }),
-      });
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${await resp.text()}`);
-      const { id } = await resp.json();
-      alert(`Dokument erfolgreich übermittelt. ID: ${id}`);
+      const payload = {
+        pnr: doc.patient.patientId,
+        type: doc.documentType,
+        fall: doc.setId,
+        serviceTmr: doc.serviceDate,
+        originationDttm: doc.originationDate,
+        quartal: computeQuartal(doc.serviceDate),
+        lanr: doc.provider.lanr,
+        bsnr: doc.provider.bsnr,
+        ik: doc.versicherung.kostentraegerkennung,
+        xml: xmlB64,
+      };
+      const id = backendId
+        ? await apiUpdate(backendId, payload)
+        : await apiCreate(payload);
+      setBackendId(id);
+      alert(`Dokument erfolgreich ${backendId ? 'aktualisiert' : 'gespeichert'}. ID: ${id}`);
     } catch (err) {
       setError(`Fehler beim Senden: ${err instanceof Error ? err.message : String(err)}`);
     }
@@ -118,6 +138,9 @@ export default function App() {
             onChange={handleLoadFile}
             style={{ display: 'none' }}
           />
+          <button className="btn btn--outline" onClick={() => setShowBackendList(true)}>
+            Gespeicherte Dokumente
+          </button>
           {doc && (
             <>
               <button
@@ -134,7 +157,7 @@ export default function App() {
                 XML exportieren
               </button>
               <button className="btn btn--success" onClick={handleSendToBackend}>
-                Ans Backend senden
+                {backendId ? 'Im Backend aktualisieren' : 'Ans Backend senden'}
               </button>
             </>
           )}
@@ -172,6 +195,14 @@ export default function App() {
 
         {doc && <DmpForm doc={doc} onChange={setDoc} showValidation={showValidation} />}
       </main>
+
+      {showBackendList && (
+        <BackendDocumentList
+          currentId={backendId}
+          onLoad={handleLoadFromBackend}
+          onClose={() => setShowBackendList(false)}
+        />
+      )}
     </div>
   );
 }

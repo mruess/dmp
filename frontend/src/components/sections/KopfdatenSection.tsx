@@ -1,5 +1,5 @@
 import type { Provider, Patient, Versicherung } from '../../types/dmp';
-import { FormField, Input, Select } from '../ui/FormField';
+import { FormField, Input } from '../ui/FormField';
 import { GESCHLECHT } from '../../data/schemaValues';
 
 interface Props {
