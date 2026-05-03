@@ -7,6 +7,12 @@ import { validateDocument } from './lib/validation';
 import { DmpForm } from './components/DmpForm';
 import './App.css';
 
+function computeQuartal(dateStr: string): string {
+  const d = new Date(dateStr);
+  const q = Math.ceil((d.getMonth() + 1) / 3);
+  return `${q}/${d.getFullYear()}`;
+}
+
 export default function App() {
   const [doc, setDoc] = useState<DmpDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -61,13 +67,26 @@ export default function App() {
     try {
       setError(null);
       const xml = serializeToXml(doc);
-      const resp = await fetch('/api/dmp/submit', {
+      const xmlB64 = btoa(unescape(encodeURIComponent(xml)));
+      const resp = await fetch('/api/dmp', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/xml; charset=utf-8' },
-        body: xml,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pnr: doc.patient.patientId,
+          type: doc.documentType,
+          fall: doc.setId,
+          serviceTmr: doc.serviceDate,
+          originationDttm: doc.originationDate,
+          quartal: computeQuartal(doc.serviceDate),
+          lanr: doc.provider.lanr,
+          bsnr: doc.provider.bsnr,
+          ik: doc.versicherung.kostentraegerkennung,
+          xml: xmlB64,
+        }),
       });
       if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${await resp.text()}`);
-      alert('Dokument erfolgreich übermittelt.');
+      const { id } = await resp.json();
+      alert(`Dokument erfolgreich übermittelt. ID: ${id}`);
     } catch (err) {
       setError(`Fehler beim Senden: ${err instanceof Error ? err.message : String(err)}`);
     }
